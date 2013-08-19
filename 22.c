@@ -7,25 +7,14 @@ int data;
 struct tnode* left;
 struct tnode* right;
 }*root=NULL;
-struct tnode* a=NULL;
 
-struct stack
-{
-int data;
-struct stack* link;
-}*s=NULL;
+void inorder(struct tnode* p);
+void preorder(struct tnode* p);
+void postorder(struct tnode* p);
+struct tnode* insert(struct tnode*,int data);
+int count=0;
 
-void inorder(struct tnode* root);
-void preorder(struct tnode* root);
-void postorder(struct tnode* root);
-void insert(struct tnode*,int data);
-static count=0;
 
-void push(struct stack* p,int data)
-{
-p=malloc(sizeof(struct stack));
-p->data=data;
-p
 
 main()
 {
@@ -35,7 +24,7 @@ printf("Start entering!!\n");
 scanf("%d",&data);
 while(data!=-1)
 	{
-	insert(root,data);
+	root=insert(root,data);
 	scanf("%d",&data);
 	}
 do
@@ -66,7 +55,7 @@ switch(choice)
 }
 
 //Insert Function.
-void insert(struct tnode* a,int data)
+struct tnode* insert(struct tnode* a,int data)
 {
 	
 	if(a==NULL)
@@ -81,20 +70,19 @@ void insert(struct tnode* a,int data)
 
 	else if(count%2!=0)//left node
 	{
-	
-	insert(a->left,data);
+	a->left=insert(a->left,data);
 	}
 	else //right node
 	{	
-	insert(a->right,data);
-
+	a->right=insert(a->right,data);
 	}
+	return a;
 }
 
 //Inorder.
 void inorder(struct tnode* p)
 {
-	while(p)
+	if(p)
 	{
 		inorder(p->left);
 		printf("%d\n",p->data);
@@ -106,7 +94,7 @@ void inorder(struct tnode* p)
 	
 void preorder(struct tnode* p)//preorder non-recursive
 {
- while(p)
+ 	if(p)
 	{
 		printf("%d\n",p->data);
 		preorder(p->left);
@@ -117,7 +105,7 @@ void preorder(struct tnode* p)//preorder non-recursive
 
 void postorder(struct tnode* p)
 {
- while(p)
+ 	if(p)
 	{
 		
 		postorder(p->left);
