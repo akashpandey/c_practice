@@ -12,10 +12,94 @@ void inorder(struct tnode* p);
 void preorder(struct tnode* p);
 void postorder(struct tnode* p);
 struct tnode* insert(struct tnode*,int data);
-int count=0;
+
+//------------------------------------------------------------------------------------------------------------
 
 
 
+
+
+struct Arrayqueue{
+int front,rear,capacity,*array;
+};
+
+struct Arrayqueue *Queue(int size)
+{
+struct Arrayqueue *q = malloc(sizeof(struct Arrayqueue));
+q->front=q->rear=-1;
+q->capacity=size;
+q->array=malloc(q->capacity * sizeof(int));
+if(!q->array)
+return NULL;
+else
+return q;
+}
+
+
+int Isemptyqueue(struct Arrayqueue *q)
+{
+return(q->front==-1);
+}
+
+int Isfullqueue(struct Arrayqueue *q)
+{
+return((q->rear+1)%q->capacity==q->front);
+}
+
+void enqueue(struct Arrayqueue *q,int data)
+{
+if(Isfullqueue(q))
+printf("\noverflow");
+else
+{
+q->rear=(q->rear+1)%q->capacity;
+q->array[q->rear]=data;
+if(q->front==-1)
+q->front=q->rear;
+}
+}
+
+int dequeue(struct Arrayqueue *q)
+{
+int data;
+if(Isemptyqueue(q))
+{
+printf("\nEMPTY");
+return 0;
+}
+else
+{
+data=q->array[q->front];
+if(q->front==q->rear)
+q->front=q->rear=-1;
+else
+q->front=(q->front+1)%q->capacity;
+return data;
+}
+}
+
+void deletequeue(struct Arrayqueue *q)
+{
+if(q)
+{
+if(q->array)
+free(q->array);
+free(q);
+printf("Ab bas kar bhai!!\n");
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------
 main()
 {
 int choice=0,data;
@@ -53,29 +137,51 @@ switch(choice)
 	}
 }while(choice<4);
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 //Insert Function.
 struct tnode* insert(struct tnode* a,int data)
 {
 	
-	if(a==NULL)
+	struct Arrayqueue* Q;	
+	struct tnode* temp;
+	struct tnode* newnode;
+	newnode=(struct tnode*) malloc(sizeof(struct tnode));
+	newnode->left=newnode->right=NULL;
+	newnode->data=data;
+	if(!newnode)
+			{
+			printf("Memory Error\n");
+			return a;
+			}
+	if(!a)
+			{
+			a=newnode;
+			return a;
+			}
+	Q = Queue(20);
+	enqueue(Q,a->data);
+	while(!Isemptyqueue(Q))
 	{
-		a=(struct tnode*) malloc(sizeof(struct tnode));
-		a->data=data;
-		a->left=NULL;
-		a->right=NULL;
-		++count;
-	}	
-	
-
-	else if(count%2!=0)//left node
-	{
-	a->left=insert(a->left,data);
+		temp = dequeue(Q);
+		if(temp->left)
+			enqueue(Q,temp->left->data);
+		else
+		{
+			temp->left=newnode;
+			deletequeue(Q);
+			break;		
+		}
+		
+		if(temp->right)
+			enqueue(Q,temp->right->data);
+		else
+		{
+			temp->right=newnode;
+			deletequeue(Q);
+			break ;		
+		}
 	}
-	else //right node
-	{	
-	a->right=insert(a->right,data);
-	}
+	deletequeue(Q);	
 	return a;
 }
 
