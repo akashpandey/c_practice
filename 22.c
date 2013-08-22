@@ -1,4 +1,5 @@
 //traversing in trees.
+//This program is running correctly.!!
 #include<stdio.h>
 #include<malloc.h>
 struct tnode
